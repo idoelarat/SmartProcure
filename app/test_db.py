@@ -21,20 +21,14 @@ class TestInventory(unittest.TestCase):
     def tearDown(self):
         self.db.close()
 
-    def test_create_part(self):
-        """Adds a part. You can see this in your DB browser after!"""
+    def test_create_and_count(self):
         p = Part(sku="P1", name="Nut", category_id=self.cat.id)
         self.db.add(p)
-        try:
-            self.db.commit()
-        except IntegrityError:
-            self.db.rollback()
-            print("\n[INFO] SKU 'P1' already exists, skipping insert.")
+        self.db.commit()
 
-    def test_count_data(self):
-        """Simple check to see how many items you've accumulated."""
         count = self.db.query(Part).count()
-        print(f"\n[INFO] Total parts currently in DB: {count}")
+        print(f"\n[INFO] Total parts after insert: {count}")
+        self.assertGreater(count, 0)
 
 
 if __name__ == "__main__":
