@@ -1,12 +1,8 @@
 # models.py
-from typing import List
-from typing import Optional
-from sqlalchemy import ForeignKey
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime
+from typing import List, Optional
+from sqlalchemy import ForeignKey, String, DateTime, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 
 
 class Base(DeclarativeBase):
@@ -60,3 +56,44 @@ class Stock(Base):
 
     def __repr__(self):
         return f"Stock(part_id={self.part_id!r}, quantity={self.quantity!r})"
+
+
+class Supplier(Base):
+    __tablename__ = "suppliers"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    contact_info: Mapped[Optional[str]] = mapped_column(String(255))
+
+    incoming_shipments: Mapped[List["StockMovement"]] = relationship(
+        back_populates="supplier"
+    )
+
+
+class Customer(Base):
+    __tablename__ = "customers"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    orders: Mapped[List["StockMovement"]] = relationship(back_populates="customer")
+
+
+class StockMovement(Base):
+    __tablename__ = "stock_movements"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    part_id: Mapped[int] = mapped_column(ForeignKey("parts.id"), index=True)
+
+    quantity: Mapped[int] = mapped_column(nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    supplier_id: Mapped[Optional[int]] = mapped_column(ForeignKey("suppliers.id"))
+    customer_id: Mapped[Optional[int]] = mapped_column(ForeignKey("customers.id"))
+
+    note: Mapped[Optional[str]] = mapped_column(String(255))
+
+    part: Mapped["Part"] = relationship(back_populates="movements")
+    supplier: Mapped["Supplier"] = relationship(back_populates="incoming_shipments")
+    customer: Mapped["Customer"] = relationship(back_populates="orders")
