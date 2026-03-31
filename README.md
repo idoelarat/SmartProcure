@@ -1,11 +1,53 @@
-# Supply Chain Analytics - Single Source of Truth
+# SmartProcure Inventory System 📦
 
-This repository contains a Python-based data pipeline designed to manage and analyze supply chain operations. The project bridges the gap between raw database storage (PostgreSQL) and actionable business intelligence, focusing on vendor reliability and inventory movement.
+A robust inventory management backend built with **Python**, **SQLAlchemy 2.0**, and **PostgreSQL**. This system tracks parts, categories, suppliers, and stock movements with high data integrity.
 
-## 🚀 Project Overview
-The system is divided into two main phases:
-1.  **Database Initialization:** Setting up the relational schema and injecting initial datasets.
-2.  **Analytics & Visualization:** Querying the "Single Source of Truth" to generate performance reports and interactive charts.
+## 🚀 Key Features
+* **Modern ORM:** Implements SQLAlchemy 2.0 `Mapped` and `mapped_column` declarations.
+* **Stock Tracking:** Automated tracking of incoming and outgoing movements.
+* **Data Validation:** Uses PostgreSQL Native Enums to enforce strict movement types (`incoming`, `outgoing`).
+* **Automated Timestamps:** Server-side timestamping using `func.now()`.
+* **Unit Testing:** Comprehensive test suite to validate database relationships and constraints.
 
+---
 
-# In Progress
+## 🛠 Prerequisites
+* **Python 3.10+**
+* **PostgreSQL** (Installed and running)
+* **Virtual Environment** (`venv` or `conda`)
+
+---
+
+## 📦 Installation & Setup
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/idoelarat/SmartProcure.git](https://github.com/idoelarat/SmartProcure.git)
+    cd SmartProcure
+    ```
+
+2.  **Create a Virtual Environment:**
+    ```bash
+    python -m venv .venv
+    # Activate on Windows:
+    .venv\Scripts\activate
+    # Activate on Mac/Linux:
+    source .venv/bin/activate
+    ```
+
+3.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Database Configuration:**
+    Ensure your `database.py` reflects your PostgreSQL credentials in the .env file:
+    `postgresql://USER:PASSWORD@localhost:5432/DB_NAME`
+
+---
+
+## 🚦 Running Tests
+To verify the database models and relationships, run the test suite:
+```bash
+python app/test_db.py
+```
