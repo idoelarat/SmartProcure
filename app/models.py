@@ -26,6 +26,7 @@ class Part(Base):
 
     category: Mapped["Category"] = relationship(back_populates="parts")
     stock: Mapped["Stock"] = relationship(back_populates="part")
+    movements: Mapped[List["StockMovement"]] = relationship(back_populates="part")
 
     def __repr__(self):
         return f"Part(sku={self.sku!r}, name={self.name!r})"
@@ -65,9 +66,7 @@ class Supplier(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     contact_info: Mapped[Optional[str]] = mapped_column(String(255))
 
-    incoming_shipments: Mapped[List["StockMovement"]] = relationship(
-        back_populates="supplier"
-    )
+    movements: Mapped[List["StockMovement"]] = relationship(back_populates="supplier")
 
 
 class Customer(Base):
@@ -76,7 +75,7 @@ class Customer(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
 
-    orders: Mapped[List["StockMovement"]] = relationship(back_populates="customer")
+    movements: Mapped[List["StockMovement"]] = relationship(back_populates="customer")
 
 
 class StockMovement(Base):
@@ -87,6 +86,7 @@ class StockMovement(Base):
 
     quantity: Mapped[int] = mapped_column(nullable=False)
 
+    movement_type: Mapped[str] = mapped_column(String(20))
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     supplier_id: Mapped[Optional[int]] = mapped_column(ForeignKey("suppliers.id"))
@@ -95,5 +95,5 @@ class StockMovement(Base):
     note: Mapped[Optional[str]] = mapped_column(String(255))
 
     part: Mapped["Part"] = relationship(back_populates="movements")
-    supplier: Mapped["Supplier"] = relationship(back_populates="incoming_shipments")
-    customer: Mapped["Customer"] = relationship(back_populates="orders")
+    supplier: Mapped["Supplier"] = relationship(back_populates="movements")
+    customer: Mapped["Customer"] = relationship(back_populates="movements")
