@@ -1,7 +1,7 @@
 # models.py
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import ForeignKey, String, DateTime, func
+from sqlalchemy import ForeignKey, String, DateTime, func, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 
 
@@ -86,7 +86,9 @@ class StockMovement(Base):
 
     quantity: Mapped[int] = mapped_column(nullable=False)
 
-    movement_type: Mapped[str] = mapped_column(String(20))
+    movement_type: Mapped[str] = mapped_column(
+        Enum("incoming", "outgoing", name="movement_type_enum"), nullable=False
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     supplier_id: Mapped[Optional[int]] = mapped_column(ForeignKey("suppliers.id"))
