@@ -1,4 +1,4 @@
-# clean_db.py
+# app\clean_db.py
 from database import engine
 from models import Base
 
